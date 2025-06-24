@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}เพิ่มพรรณไม้-เว็ปไซต์สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+
+<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
+<h2>เพิ่มพรรณไม้</h2>
+<form method="POST" action="{{ url_for('add_plant') }}" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>รหัสพรรณไม้</label>
+        <input type="text" name="id_flower" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>ชื่อพื้นเมือง</label>
+        <input type="text" name="local_name" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>ชื่อวิทยาศาสตร์</label>
+        <input type="text" name="scientific_name" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>ชื่อวงศ์</label>
+        <input type="text" name="family" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>ลักษณะวิสัย</label>
+        <input type="text" name="habit" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>ลักษณะเด่นของพืช</label>
+        <textarea name="characteristics" class="form-control" required></textarea>
+    </div>
+    <div class="form-group">
+        <label>บริเวณที่พบ</label>
+        <select name="location" class="form-control" required>
+            <option value="" disabled selected>เลือกบริเวณ</option>
+            {% for location in locations %}
+            <option value="{{ location.id }}">{{ location.location_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    
+    <div class="form-group">
+        <label for="image">Upload Image:</label>
+        <input type="file" name="image" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
+</form>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block title %} หน้าแรก-สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+<div class="container mt-4 p-4 border rounded shadow-sm bg-white">
+    <h2 class="text-center mb-4">รายการพรรณไม้</h2>
+    
+    {% if current_user.is_authenticated %}
+
+    {% if current_user.role == 'admin' %}
+    <div class="mb-4 text-center">
+        <a href="/locations" class="btn btn-warning"><i class="bi bi-building-fill"></i> พื้นที่ศึกษา</a>
+        <a href="{{ url_for('add_plant') }}" class="btn btn-success me-2"><i class="bi bi-plus-square-fill"></i> เพิ่มพรรณไม้</a>
+        <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary"><i class="bi bi-file-earmark-excel-fill"></i> อัปโหลด Excel</a>
+        <a href="/manage_plant" class="btn btn-primary"><i class="bi bi-table"></i> แสดงผลแบบตาราง</a>
+        <a href="{{ url_for('download_plants_excel') }}" class="btn btn-success">
+            <i class="bi bi-download"></i> ดาวน์โหลดข้อมูลพรรณไม้ (Excel)
+        </a>
+    </div>
+    {% endif %}
+    {% if current_user.role == 'user' %}
+    <div class="mb-4 text-center">
+        <a href="/locations" class="btn btn-warning"><i class="bi bi-building-fill"></i> พื้นที่ศึกษา</a>
+        <a href="{{ url_for('add_plant') }}" class="btn btn-success me-2"><i class="bi bi-plus-square-fill"></i> เพิ่มพรรณไม้</a>
+        <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary"><i class="bi bi-file-earmark-excel-fill"></i> อัปโหลด Excel</a>
+        <a href="/manage_plant" class="btn btn-primary"><i class="bi bi-table"></i> แสดงผลแบบตาราง</a>
+        <a href="{{ url_for('download_plants_excel') }}" class="btn btn-success">
+            <i class="bi bi-download"></i> ดาวน์โหลดข้อมูลพรรณไม้ (Excel)
+        </a>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="mb-4 text-center">
+        <a href="/locations" class="btn btn-warning"><i class="bi bi-building-fill"></i> พื้นที่ศึกษา</a>
+    <a href="/manage_plant" class="btn btn-primary"><i class="bi bi-table"></i> แสดงผลแบบตาราง</a>
+    <a href="{{ url_for('download_plants_excel') }}" class="btn btn-success">
+        <i class="bi bi-download"></i> ดาวน์โหลดข้อมูลพรรณไม้ (Excel)
+    </a>
+    </div>
+    {% endif %}
+
+    <!-- แสดงรายการพรรณไม้ในรูปแบบการ์ด -->
+    <div class="row g-4">
+        {% for plant in plants %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                {% if plant.image_url %}
+                <img src="{{ url_for('static', filename=plant.image_url) }}" alt="{{ plant.local_name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                    <span class="text-muted">ไม่มีรูป</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ plant.local_name }}</h5>
+                    <p class="card-text">
+                        <strong>รหัสพรรณไม้:</strong> {{ plant.id_flower }}<br>
+                        <strong>ชื่อวิทยาศาสตร์:</strong> {{ plant.scientific_name }}<br>
+                        <strong>ชื่อวงศ์:</strong> {{ plant.family }}<br>
+                        <strong>ลักษณะวิสัย:</strong> {{ plant.habit }}<br>
+                        <strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}<br>
+                        <strong>บริเวณที่พบ:</strong> {{ plant.location.location_name }}
+                    </p>
+                    <a href="{{ url_for('plant_details', id=plant.id) }}" class="btn btn-link">ดูรายละเอียด</a>
+                </div>
+                {% if current_user.role == 'admin' %}
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i> แก้ไข</a>
+                    <form action="{{ url_for('delete_plant', id=plant.id) }}" method="post" onsubmit="return confirmDelete()">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash-fill"></i> ลบ</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function confirmDelete() {
+        return confirm('คุณแน่ใจหรือไม่ว่าจะลบข้อมูลพรรณไม้นี้?');
+    }
+</script>
+{% endblock %}

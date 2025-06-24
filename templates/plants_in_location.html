@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}พื้นที่ศึกษา{{ location.location_name }}-สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+<div class="container mt-4 p-4 border rounded shadow-sm bg-white">
+    <h2 class="text-center mb-4">พรรณไม้ใน {{ location.location_name }}</h2>
+
+    <!-- Display Location Image -->
+    {% if location.location_image %}
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename=location.location_image) }}" alt="{{ location.location_name }}" class="img-fluid rounded" style="max-height: 300px; width: 500px; object-fit: cover;">
+    </div>
+    {% else %}
+    <div class="text-center mb-4">
+        <span class="text-muted">ไม่มีรูปสถานที่</span>
+    </div>
+    {% endif %}
+
+    <!-- Display Plants -->
+    <div class="row g-4">
+        {% for plant in plants %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                {% if plant.image_url %}
+                    <img src="{{ url_for('static', filename=plant.image_url.replace('static/', '')) }}" alt="{{ plant.local_name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                        <span class="text-muted">ไม่มีรูป</span>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ plant.local_name }}</h5>
+                    <p class="card-text">
+                        <strong>รหัสพรรณไม้:</strong> {{ plant.id_flower }}<br>
+                        <strong>ชื่อวิทยาศาสตร์:</strong> {{ plant.scientific_name }}<br>
+                        <strong>ชื่อวงศ์:</strong> {{ plant.family }}<br>
+                        <strong>ลักษณะวิสัย:</strong> {{ plant.habit }}<br>
+                        <strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}
+                    </p>
+                    <a href="{{ url_for('plant_details', id=plant.id) }}" class="btn btn-link"><i class="bi bi-eye"></i> ดูรายละเอียด</a>
+                </div>
+                {% if current_user.role == 'admin' %}
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" class="btn btn-info btn-sm">แก้ไข</a>
+                    <form action="{{ url_for('delete_plant', id=plant.id) }}" method="post" onsubmit="return confirmDelete()">
+                        <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

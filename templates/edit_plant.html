@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %} จัดการพรรณไม้-สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+
+
+<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
+    <h1>แก้ไขพรรณไม้: {{ plant.local_name }}</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="id_flower">รหัสพรรณไม้</label>
+            <input type="text" id="id_flower" name="id_flower" class="form-control" value="{{ plant.id_flower }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="local_name">ชื่อพื้นเมือง</label>
+            <input type="text" id="local_name" name="local_name" class="form-control" value="{{ plant.local_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="scientific_name">ชื่อวิทยาศาสตร์</label>
+            <input type="text" id="scientific_name" name="scientific_name" class="form-control" value="{{ plant.scientific_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="family">ชื่อวงศ์</label>
+            <input type="text" id="family" name="family" class="form-control" value="{{ plant.family }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="habit">ลักษณะวิสัย</label>
+            <input type="text" id="habit" name="habit" class="form-control" value="{{ plant.habit }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="characteristics">ลักษณะเด่นของพืช</label>
+            <textarea id="characteristics" name="characteristics" class="form-control" required>{{ plant.characteristics }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="location">เลือกสถานที่ที่พบ</label>
+            <select id="location" name="location" class="form-control" required>
+                {% for location in locations %}
+                    <option value="{{ location.id }}" {% if location.id == plant.location_id %}selected{% endif %}>
+                        {{ location.location_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Image:</label>
+            {% if plant.image_url %}
+                <div>
+                    <img src="{{ url_for('static', filename=plant.image_url.replace('static/', '')) }}" alt="{{ plant.local_name }}" width="150"><br>
+                    <small>กดปุ่มเพื่อเปลี่ยนภาพ</small>
+                </div>
+            {% endif %}
+            <input type="file" class="form-control" name="image" id="image"><br>
+        </div>
+
+        <button type="submit" class="btn btn-success">บันทึก</button>
+    </form>
+</div>
+{% endblock %}

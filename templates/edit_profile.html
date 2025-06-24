@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}จัดการบัญชี-เว็ปไซต์สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
+    <h2>จัดการบัญชี</h2>
+
+    <form method="POST" action="{{ url_for('edit_profile') }}">
+
+        <!-- Username Field -->
+        <div class="form-group">
+            <label for="username">ชื่อผู้ใช้</label>
+            <input type="text" class="form-control" name="username" value="{{ user.username }}" placeholder="Enter username" required>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="email">อีเมล</label>
+            <input type="email" class="form-control" name="email" value="{{ user.email }}" placeholder="Enter email address" required>
+        </div>
+
+        <!-- Password Field (Optional) -->
+        <div class="form-group">
+            <label for="password">รหัสผ่าน (Leave empty to keep current)</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter new password (if you want to change)">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">บันทึก</button>
+    </form>
+</div>
+{% endblock %}

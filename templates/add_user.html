@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
+    <h2>เพิ่มผู้ใช้</h2>
+
+    <form method="POST" action="{{ url_for('add_user') }}">
+
+        <!-- Username Field -->
+        <div class="form-group">
+            <label for="username">ชื่อผู้ใช้</label>
+            <input type="text" class="form-control" name="username" placeholder="Enter username" required>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Enter email address" required>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+            <label for="password">รหัสผ่าน</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+        </div>
+
+        <!-- Role Field -->
+        <div class="form-group">
+            <label for="role">ตำแหน่ง</label>
+            <select class="form-control" name="role">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}แก้ไขผู้ใช้{{ user.username }}-สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
+    <h2>Edit User</h2>
+
+    <form method="POST" action="{{ url_for('edit_user', user_id=user.id) }}">
+
+        <!-- Username Field -->
+        <div class="form-group">
+            <label for="username">ชื่อผู้ใช้</label>
+            <input type="text" class="form-control" name="username" value="{{ user.username }}" placeholder="Enter username" required>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" name="email" value="{{ user.email }}" placeholder="Enter email address" required>
+        </div>
+
+        <!-- Role Field -->
+        <div class="form-group">
+            <label for="role">ตำแหน่ง</label>
+            <select class="form-control" name="role">
+                <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+            </select>
+        </div>
+
+        <!-- Password Field (Optional) -->
+        <div class="form-group">
+            <label for="password">รหัสผ่าน (Leave empty to keep current)</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter new password (if you want to change)">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">บันทึก</button>
+        <a href="/view_users" class="btn btn-danger">กลับ</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %} พื้นที่ศึกษา-สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+<div class="container mt-4 p-4 border rounded shadow-sm bg-white">
+    <h1 class="text-center mb-4">พื้นที่ศึกษา</h1>
+        <!-- ปุ่มเพิ่มพรรณไม้และอัปโหลด Excel -->
+        {% if current_user.is_authenticated %}
+        {% if current_user.role == 'admin' %}
+        <div class="mb-4 text-center">
+            <a href="/add_location" class="btn btn-info me-2"><i class="bi bi-building-fill-add"></i> เพิ่มพื้นที่ศึกษา</a>
+            <a href="{{ url_for('add_plant') }}" class="btn btn-success me-2"><i class="bi bi-plus-square-fill"></i> เพิ่มพรรณไม้</a>
+            <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary"><i class="bi bi-file-earmark-excel-fill"></i> อัปโหลด Excel</a>
+            <a href="/index" class="btn btn-warning"><i class="bi bi-eye-fill"></i> แสดงพรรณไม้</a>
+        </div>
+        {% endif %}
+        {% if current_user.role == 'user' %}
+        <div class="mb-4 text-center">
+            <a href="/add_location" class="btn btn-info me-2"><i class="bi bi-building-fill-add"></i> เพิ่มพื้นที่ศึกษา</a>
+            <a href="{{ url_for('add_plant') }}" class="btn btn-success me-2"><i class="bi bi-plus-square-fill"></i> เพิ่มพรรณไม้</a>
+            <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary"><i class="bi bi-file-earmark-excel-fill"></i> อัปโหลด Excel</a>
+            <a href="/index" class="btn btn-warning"><i class="bi bi-eye-fill"></i> แสดงพรรณไม้</a>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="mb-4 text-center">
+        <a href="/index" class="btn btn-warning"><i class="bi bi-eye-fill"></i> แสดงพรรณไม้</a>
+    </div>
+        {% endif %}
+        <div class="row g-4">
+            {% for location in locations %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    {% if location.location_image %}
+                        <!-- Render the image if it exists -->
+                        <img src="{{ url_for('static', filename=location.location_image) }}" alt="{{ location.location_name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <!-- Placeholder for when no image exists -->
+                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                            <span class="text-muted">No image available</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ location.location_name }}</h5>
+                        <a href="{{ url_for('show_plants_in_location', location_id=location.id) }}" class="btn btn-info w-100 mb-2"><i class="bi bi-book-fill"></i> ดูรายละเอียด</a>
+                    </div>
+                    <div class="card-footer d-flex flex-column">
+                        {% if current_user.role == 'admin' %}
+                        <a href="{{ url_for('edit_location', location_id=location.id) }}" class="btn btn-warning mb-2"><i class="bi bi-pencil-square"></i> แก้ไข</a>
+                        <form action="{{ url_for('delete_location', location_id=location.id) }}" method="POST" onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบสถานที่นี้?')">
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> ลบ</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+</div>
+{% endblock %}

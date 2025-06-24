@@ -1,0 +1,145 @@
+body {
+    font-family: 'Sarabun', sans-serif;
+    background-color: #6f42c1;
+}
+
+
+        /* ปรับขนาดของ side menu */
+        .sidebar {
+            height: 100vh;  /* ให้แถบเมนูเต็มความสูงของหน้าจอ */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #ffffff;  /* สีพื้นหลังของ Sidebar */
+            padding-top: 20px;
+            transform: translateX(-250px);  /* ซ่อน Sidebar เมื่อไม่ได้เปิด */
+            transition: transform 0.3s ease-in-out;  /* เคลื่อนไหวในการเปิดปิด Sidebar */
+            z-index: 1000;  /* ให้ Sidebar โผล่ทับเนื้อหา */
+            box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);  /* เงาให้ Sidebar ดูเด่น */
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 15px;
+            color: #000000;  /* เปลี่ยนสีข้อความใน Sidebar เป็นสีดำ */
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #5a32a3;  /* สีม่วงเข้มขึ้นเมื่อ hover */
+            color: #ffffff;  /* สีข้อความยังคงเป็นสีขาวเมื่อ hover */
+        }
+
+        .sidebar .sidebar-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            padding: 20px;
+            z-index: 500;  /* ให้ content อยู่หลัง Sidebar */
+            color: #000000; /* เปลี่ยนสีข้อความใน Content เป็นสีดำ */
+            transition: opacity 0.3s ease; /* เพิ่มการเคลื่อนไหวในการแสดง/ซ่อนเนื้อหา */
+        }
+
+        .sidebar h4 {
+            color: #000000;  /* เปลี่ยนสีข้อความในหัว Sidebar เป็นสีดำ */
+            text-align: center;
+        }
+
+        .img-banner {
+            width: 100%;
+            height: auto;
+        }
+
+        /* ปรับให้ Sidebar เปิดปิดตามปุ่มในมือถือ */
+        .sidebar.show {
+            transform: translateX(0);  /* ทำให้ Sidebar เคลื่อนที่ไปยังตำแหน่งที่เปิด */
+        }
+
+        /* ปรับสี Navbar ให้เหมือน Sidebar */
+        .navbar {
+            background-color: #6610f2;  /* ใช้สีเดียวกับ Sidebar */
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        /* ปุ่ม Close ใน Sidebar */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 30px;
+            color: #000000;
+            cursor: pointer;
+        }
+
+ /* ทำให้ footer อยู่ที่ด้านล่างสุดของ sidebar */
+ #footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding-top: 1rem; /* เพิ่มช่องว่างด้านบนของ footer */
+}
+
+/* ปรับข้อความใน footer */
+.footer-text {
+    font-size: 16px; /* ปรับขนาดตัวหนังสือ */
+    font-family: 'Sarabun', sans-serif;
+    text-align: center;
+}
+        /* ซ่อนปุ่ม Toggle ในขนาดหน้าจอที่ใหญ่กว่า */
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0);  /* เปิด Sidebar ตลอดเวลาในหน้าจอที่ใหญ่ */
+            }
+
+            .navbar-toggler {
+                display: none;  /* ซ่อนปุ่ม Toggle ในหน้าจอที่ใหญ่ */
+            }
+
+            .content {
+                margin-left: 250px;  /* เพิ่ม margin ให้กับเนื้อหาเมื่อ Sidebar เปิดในหน้าจอขนาดใหญ่ */
+            }
+
+            .close-btn {
+                display: none;  /* ซ่อนปุ่มปิดใน Desktop */
+            }
+
+            /* สำหรับ logo ที่แสดงใน Sidebar */
+            .sidebar-logo img {
+                width: 100%;  /* ปรับขนาด logo ให้พอดีกับ Sidebar */
+                height: auto;
+            }
+
+            /* ซ่อน Navbar ใน Desktop */
+            .navbar {
+                display: none;  /* ซ่อน Navbar ในขนาดหน้าจอที่ใหญ่ */
+            }
+        }
+
+        /* ซ่อนเนื้อหาหลังจากเปิด Sidebar ในมือถือ */
+        @media (max-width: 767px) {
+            .content.hide {
+                opacity: 0;  /* ซ่อนเนื้อหาเมื่อ Sidebar เปิด */
+            }
+
+            /* สำหรับ logo ในมือถือ */
+            .navbar-logo {
+                position: absolute;
+                right: 20px;  /* จัดตำแหน่งให้ logo อยู่ขวาสุด */
+                top: 50%;
+                transform: translateY(-50%);
+                height: 30px;  /* ปรับขนาด logo */
+            }
+
+            /* ซ่อน logo ใน Sidebar */
+            .sidebar-logo {
+                display: none;
+            }
+        }

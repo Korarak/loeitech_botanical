@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %} อัพโหลดExcel-สวนพฤษศาสตร์{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>วิธีการอัปโหลดไฟล์ Excel</h2>
+    <p>โปรดทำตามขั้นตอนด้านล่างเพื่ออัปโหลดไฟล์ Excel ที่มีข้อมูลพรรณไม้ของคุณ:</p>
+    
+    <!-- Step-by-Step Instructions -->
+    <div class="alert alert-info">
+        <h4>ขั้นตอนที่ 1: เลือกไฟล์ Excel</h4>
+        <p>ให้แน่ใจว่าไฟล์ที่คุณต้องการอัปโหลดเป็นไฟล์ Excel ที่มีนามสกุล <strong>.xlsx</strong></p>
+    </div>
+
+    <div class="alert alert-info">
+        <h4>ขั้นตอนที่ 2: ตรวจสอบข้อมูลในไฟล์ Excel</h4>
+        <p>ไฟล์ของคุณควรมีข้อมูลที่เกี่ยวข้องกับพรรณไม้ เช่น ชื่อพรรณไม้, ประเภท, ลักษณะ หรือข้อมูลอื่น ๆ ที่เราต้องการนำเข้าระบบ</p>
+    </div>
+
+    <div class="alert alert-info">
+        <h4>ขั้นตอนที่ 3: อัปโหลดไฟล์</h4>
+        <p>คลิกปุ่ม "เลือกไฟล์" และเลือกไฟล์ Excel ของคุณ จากนั้นคลิก "อัปโหลด" เพื่อเริ่มต้นกระบวนการ</p>
+    </div>
+
+    <!-- Form to Upload Excel -->
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">เลือกไฟล์ Excel (.xlsx):</label>
+            <input type="file" name="file" id="file" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">อัปโหลดไฟล์</button>
+    </form>
+
+
+</div>
+{% endblock %}
