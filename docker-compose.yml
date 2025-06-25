@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: .
+    container_name: loeitech_botanical
+    ports:
+      - "5510:5000"
+    environment:
+      FLASK_ENV: development
+
+networks:
+  flask-network:
+    driver: bridge
