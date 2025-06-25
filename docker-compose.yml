@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   flask-app:
     build: .
     container_name: loeitech_botanical
-    ports:
+    ports:  
       - "5510:5000"
     environment:
       FLASK_ENV: development
