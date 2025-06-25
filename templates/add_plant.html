@@ -2,52 +2,236 @@
 {% block title %}เพิ่มพรรณไม้-เว็ปไซต์สวนพฤษศาสตร์{% endblock %}
 {% block content %}
 
-<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
-<h2>เพิ่มพรรณไม้</h2>
-<form method="POST" action="{{ url_for('add_plant') }}" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>รหัสพรรณไม้</label>
-        <input type="text" name="id_flower" class="form-control" required>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-gradient-primary text-white text-center py-4">
+                <h3 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>เพิ่มพรรณไม้ใหม่
+                </h3>
+                <p class="mb-0 mt-2 opacity-75">กรอกข้อมูลพรรณไม้เพื่อเพิ่มเข้าสู่ระบบ</p>
+            </div>
+            
+            <div class="card-body p-5">
+                <form method="POST" action="{{ url_for('add_plant') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-hash me-2"></i>รหัสพรรณไม้
+                                </label>
+                                <input type="text" 
+                                       name="id_flower" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="กรุณากรอกรหัสพรรณไม้"
+                                       required>
+                                <div class="invalid-feedback">
+                                    กรุณากรอกรหัสพรรณไม้
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-flower1 me-2"></i>ชื่อพื้นเมือง
+                                </label>
+                                <input type="text" 
+                                       name="local_name" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="กรุณากรอกชื่อพื้นเมือง"
+                                       required>
+                                <div class="invalid-feedback">
+                                    กรุณากรอกชื่อพื้นเมือง
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-flower2 me-2"></i>ชื่อวิทยาศาสตร์
+                        </label>
+                        <input type="text" 
+                               name="scientific_name" 
+                               class="form-control form-control-lg" 
+                               placeholder="กรุณากรอกชื่อวิทยาศาสตร์"
+                               required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกชื่อวิทยาศาสตร์
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-diagram-3 me-2"></i>ชื่อวงศ์
+                                </label>
+                                <input type="text" 
+                                       name="family" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="กรุณากรอกชื่อวงศ์"
+                                       required>
+                                <div class="invalid-feedback">
+                                    กรุณากรอกชื่อวงศ์
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-tree me-2"></i>ลักษณะวิสัย
+                                </label>
+                                <input type="text" 
+                                       name="habit" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="กรุณากรอกลักษณะวิสัย"
+                                       required>
+                                <div class="invalid-feedback">
+                                    กรุณากรอกลักษณะวิสัย
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-star me-2"></i>ลักษณะเด่นของพืช
+                        </label>
+                        <textarea name="characteristics" 
+                                  class="form-control form-control-lg" 
+                                  rows="4"
+                                  placeholder="กรุณากรอกลักษณะเด่นของพืช"
+                                  required></textarea>
+                        <div class="invalid-feedback">
+                            กรุณากรอกลักษณะเด่นของพืช
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-geo-alt me-2"></i>บริเวณที่พบ
+                        </label>
+                        <select name="location" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>เลือกบริเวณที่พบ</option>
+                            {% for location in locations %}
+                            <option value="{{ location.id }}">{{ location.location_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">
+                            กรุณาเลือกบริเวณที่พบ
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-image me-2"></i>อัปโหลดรูปภาพ
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <input type="file" 
+                                   name="image" 
+                                   accept="image/*" 
+                                   class="form-control"
+                                   id="imageInput">
+                            <label class="input-group-text" for="imageInput">
+                                <i class="bi bi-upload"></i>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            <i class="bi bi-info-circle me-1"></i>
+                            รองรับไฟล์รูปภาพ: JPG, PNG, GIF ขนาดไม่เกิน 5MB
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg me-md-2">
+                            <i class="bi bi-arrow-left me-2"></i>ยกเลิก
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-plus-circle me-2"></i>เพิ่มข้อมูล
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label>ชื่อพื้นเมือง</label>
-        <input type="text" name="local_name" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>ชื่อวิทยาศาสตร์</label>
-        <input type="text" name="scientific_name" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>ชื่อวงศ์</label>
-        <input type="text" name="family" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>ลักษณะวิสัย</label>
-        <input type="text" name="habit" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>ลักษณะเด่นของพืช</label>
-        <textarea name="characteristics" class="form-control" required></textarea>
-    </div>
-    <div class="form-group">
-        <label>บริเวณที่พบ</label>
-        <select name="location" class="form-control" required>
-            <option value="" disabled selected>เลือกบริเวณ</option>
-            {% for location in locations %}
-            <option value="{{ location.id }}">{{ location.location_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    
-    
-    <div class="form-group">
-        <label for="image">Upload Image:</label>
-        <input type="file" name="image" accept="image/*">
-    </div>
-    <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
-</form>
 </div>
 
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
 
+// File input preview
+document.getElementById('imageInput').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // You can add image preview functionality here if needed
+            console.log('File selected:', file.name);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+
+<style>
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    border: none;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+    transform: translateY(-2px);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+</style>
 
 {% endblock %}

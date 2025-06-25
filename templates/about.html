@@ -1,28 +1,179 @@
 {% extends "layout.html" %}
+{% block title %}เกี่ยวกับเรา-เว็ปสวนพฤษศาสตร์{% endblock %}
 {% block content %}
-<br>
-<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
-<header>
-    <h1>เกี่ยวกับเรา</h1>
-</header>
-<section>
-    <p>ยินดีต้อนรับสู่เว็บไซต์ของเรา! เราเป็นแพลตฟอร์มที่มุ่งมั่นในการจัดการข้อมูลพรรณไม้ ช่วยให้ผู้ใช้งานสามารถค้นหาข้อมูลเกี่ยวกับพืชต่างๆ </p>
-  <li>ผู้จัดทำ นายลัทธพล ศิริหล้า 66309010011 ปวส.2/1 </li>
-    <li><a href="https://www.facebook.com/pob.ratapon/"><i class="bi bi-facebook"></i> Ratapon Pob</a></li>
-    <li><a href="https://www.instagram.com/pobpopepobpob_/"><i class="bi bi-instagram"></i> pobpopepobpob_</a></li>
-    <li><a href=""><i class="bi bi-search"></i> วิทยาลัยเทคนิคเลย</a></li>
-    <h2>พันธกิจของเรา</h2>
-    <p>พันธกิจของเราคือการให้ความรู้เกี่ยวกับพรรณไม้หลากหลายชนิด รวมถึงการส่งเสริมการอนุรักษ์ธรรมชาติและความหลากหลายทางชีวภาพ เรามุ่งเน้นการให้ข้อมูลที่ถูกต้องและเป็นประโยชน์เพื่อให้ทุกคนได้เข้าถึงและใช้งานได้ง่าย</p>
-    
-    <h2>บริการของเรา</h2>
-    <ul>
-        <li>ข้อมูลพรรณไม้หลากหลายชนิด ทั้งชื่อวิทยาศาสตร์ ลักษณะทั่วไป และถิ่นที่อยู่</li>
-        <li>การอัปโหลดข้อมูลพืชใหม่และการจัดการข้อมูลอย่างมีประสิทธิภาพ</li>
-        <li>ระบบค้นหาที่ช่วยให้คุณเข้าถึงข้อมูลพรรณไม้ที่คุณต้องการได้ง่ายดาย</li>
-    </ul>
-    
-    <h2>ติดต่อเรา</h2>
-    <p>หากคุณมีคำถามหรือข้อเสนอแนะ สามารถติดต่อเราได้ทางอีเมลที่ <a href="">66309010011@loeitech.ac.th</a></p>
-</section>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-gradient-primary text-white text-center py-4">
+                <h2 class="mb-0">
+                    <i class="bi bi-heart-fill me-2"></i>เกี่ยวกับเรา
+                </h2>
+                <p class="mb-0 mt-2 opacity-75">ระบบจัดการพรรณไม้สวนพฤกษศาสตร์โรงเรียน</p>
+            </div>
+            
+            <div class="card-body p-5">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-center mb-5">
+                            <i class="bi bi-tree-fill text-primary" style="font-size: 4rem;"></i>
+                            <h3 class="text-primary mt-3">ยินดีต้อนรับสู่เว็บไซต์ของเรา!</h3>
+                            <p class="lead text-muted">
+                                เราเป็นแพลตฟอร์มที่มุ่งมั่นในการจัดการข้อมูลพรรณไม้ ช่วยให้ผู้ใช้งานสามารถค้นหาข้อมูลเกี่ยวกับพืชต่างๆ ได้อย่างสะดวกและรวดเร็ว
+                            </p>
+                        </div>
+                        
+                        <!-- Developer Info -->
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body">
+                                <h4 class="text-primary mb-3">
+                                    <i class="bi bi-person-badge me-2"></i>ผู้จัดทำ
+                                </h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-2">
+                                            <strong>ชื่อ:</strong> นายลัทธพล ศิริหล้า
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>รหัสนักศึกษา:</strong> 66309010011
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>ชั้นปี:</strong> ปวส.2/1
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-2">
+                                            <strong>สถาบัน:</strong> วิทยาลัยเทคนิคเลย
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>อีเมล:</strong> 
+                                            <a href="mailto:66309010011@loeitech.ac.th" class="text-decoration-none">
+                                                66309010011@loeitech.ac.th
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Social Links -->
+                                <div class="mt-3">
+                                    <h5 class="text-primary mb-2">ติดตามเราได้ที่:</h5>
+                                    <div class="d-flex gap-3">
+                                        <a href="https://www.facebook.com/pob.ratapon/" 
+                                           class="btn btn-outline-primary" 
+                                           target="_blank">
+                                            <i class="bi bi-facebook me-2"></i>Facebook
+                                        </a>
+                                        <a href="https://www.instagram.com/pobpopepobpob_/" 
+                                           class="btn btn-outline-danger" 
+                                           target="_blank">
+                                            <i class="bi bi-instagram me-2"></i>Instagram
+                                        </a>
+                                        <a href="https://www.loeitech.ac.th" 
+                                           class="btn btn-outline-success" 
+                                           target="_blank">
+                                            <i class="bi bi-building me-2"></i>วิทยาลัยเทคนิคเลย
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mission -->
+                        <div class="mb-4">
+                            <h4 class="text-primary mb-3">
+                                <i class="bi bi-bullseye me-2"></i>พันธกิจของเรา
+                            </h4>
+                            <p class="text-muted">
+                                พันธกิจของเราคือการให้ความรู้เกี่ยวกับพรรณไม้หลากหลายชนิด รวมถึงการส่งเสริมการอนุรักษ์ธรรมชาติและความหลากหลายทางชีวภาพ 
+                                เรามุ่งเน้นการให้ข้อมูลที่ถูกต้องและเป็นประโยชน์เพื่อให้ทุกคนได้เข้าถึงและใช้งานได้ง่าย
+                            </p>
+                        </div>
+                        
+                        <!-- Services -->
+                        <div class="mb-4">
+                            <h4 class="text-primary mb-3">
+                                <i class="bi bi-gear-fill me-2"></i>บริการของเรา
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-database text-primary mb-3" style="font-size: 2rem;"></i>
+                                            <h6 class="card-title">ข้อมูลพรรณไม้</h6>
+                                            <p class="card-text small text-muted">
+                                                ข้อมูลพรรณไม้หลากหลายชนิด ทั้งชื่อวิทยาศาสตร์ ลักษณะทั่วไป และถิ่นที่อยู่
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-upload text-success mb-3" style="font-size: 2rem;"></i>
+                                            <h6 class="card-title">การจัดการข้อมูล</h6>
+                                            <p class="card-text small text-muted">
+                                                การอัปโหลดข้อมูลพืชใหม่และการจัดการข้อมูลอย่างมีประสิทธิภาพ
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-search text-info mb-3" style="font-size: 2rem;"></i>
+                                            <h6 class="card-title">ระบบค้นหา</h6>
+                                            <p class="card-text small text-muted">
+                                                ระบบค้นหาที่ช่วยให้คุณเข้าถึงข้อมูลพรรณไม้ที่คุณต้องการได้ง่ายดาย
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact -->
+                        <div class="card bg-primary text-white border-0">
+                            <div class="card-body text-center">
+                                <h4 class="mb-3">
+                                    <i class="bi bi-envelope-fill me-2"></i>ติดต่อเรา
+                                </h4>
+                                <p class="mb-0">
+                                    หากคุณมีคำถามหรือข้อเสนอแนะ สามารถติดต่อเราได้ทางอีเมลที่ 
+                                    <a href="mailto:66309010011@loeitech.ac.th" class="text-white text-decoration-underline">
+                                        66309010011@loeitech.ac.th
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.btn {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card.shadow-sm {
+    transition: all 0.3s ease;
+}
+
+.card.shadow-sm:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+</style>
 {% endblock %}
