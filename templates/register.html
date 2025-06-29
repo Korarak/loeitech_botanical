@@ -1,30 +1,162 @@
 {% extends "layout.html" %}
 {% block title %}สมัครสมาชิก-เว็ปสวนพฤษศาสตร์{% endblock %}
 {% block content %}
-<div class="container">
-    <h2 class="my-4">Register</h2>
-    <form action="{{ url_for('register') }}" method="POST">
-        <!-- Username -->
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-gradient-primary text-white text-center py-4">
+                <h3 class="mb-0">
+                    <i class="bi bi-person-plus me-2"></i>สมัครสมาชิก
+                </h3>
+                <p class="mb-0 mt-2 opacity-75">สร้างบัญชีใหม่เพื่อเข้าถึงระบบ</p>
+            </div>
+            
+            <div class="card-body p-5">
+                <form action="{{ url_for('register') }}" method="POST" class="needs-validation" novalidate>
+                    <!-- Username -->
+                    <div class="mb-4">
+                        <label for="username" class="form-label fw-semibold">
+                            <i class="bi bi-person me-2"></i>ชื่อผู้ใช้
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="username" 
+                               name="username" 
+                               placeholder="กรุณากรอกชื่อผู้ใช้"
+                               required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกชื่อผู้ใช้
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-semibold">
+                            <i class="bi bi-envelope me-2"></i>อีเมล
+                        </label>
+                        <input type="email" 
+                               class="form-control form-control-lg" 
+                               id="email" 
+                               name="email" 
+                               placeholder="กรุณากรอกอีเมล"
+                               required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกอีเมลที่ถูกต้อง
+                        </div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">
+                            <i class="bi bi-lock me-2"></i>รหัสผ่าน
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="กรุณากรอกรหัสผ่าน"
+                                   required>
+                            <button class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">
+                            กรุณากรอกรหัสผ่าน
+                        </div>
+                        <div class="form-text">
+                            <i class="bi bi-info-circle me-1"></i>
+                            รหัสผ่านควรมีความยาวอย่างน้อย 6 ตัวอักษร
+                        </div>
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>สมัครสมาชิก
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-0">
+                        มีบัญชีอยู่แล้ว? 
+                        <a href="{{ url_for('login') }}" class="text-decoration-none fw-semibold">
+                            เข้าสู่ระบบที่นี่
+                        </a>
+                    </p>
+                </div>
+            </div>
         </div>
-        
-        <!-- Email -->
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-        
-        <!-- Password -->
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        
-        <!-- Submit -->
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
-    <p class="mt-3">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
-</div>  
-  {% endblock %}
+    </div>
+</div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Password toggle
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const password = document.getElementById('password');
+    const icon = this.querySelector('i');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+});
+</script>
+
+<style>
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-2px);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}
