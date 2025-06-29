@@ -1,145 +1,375 @@
 body {
     font-family: 'Sarabun', sans-serif;
-    background-color: #6f42c1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    padding-top: 0;
+    transform: translateX(-280px);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    box-shadow: 2px 0px 20px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.sidebar-logo {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px 15px;
+    border-radius: 0 0 15px 15px;
+}
+
+.sidebar-logo img {
+    max-width: 80%;
+    height: auto;
+}
+
+.sidebar h4 {
+    color: #495057;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.sidebar-menu {
+    padding: 0 15px;
+    flex-grow: 1;
+}
+
+.sidebar-link {
+    display: block;
+    padding: 12px 20px;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.sidebar-link:hover {
+    background: linear-gradient(#8566ea);
+    color: #ffffff;
+    transform: translateX(5px);
+    text-decoration: none;
+}
+
+.sidebar-link.text-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: #fff !important;
+}
+.sidebar-link.text-primary:hover {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: #fff !important;
 }
 
 
-        /* ปรับขนาดของ side menu */
-        .sidebar {
-            height: 100vh;  /* ให้แถบเมนูเต็มความสูงของหน้าจอ */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            background-color: #ffffff;  /* สีพื้นหลังของ Sidebar */
-            padding-top: 20px;
-            transform: translateX(-250px);  /* ซ่อน Sidebar เมื่อไม่ได้เปิด */
-            transition: transform 0.3s ease-in-out;  /* เคลื่อนไหวในการเปิดปิด Sidebar */
-            z-index: 1000;  /* ให้ Sidebar โผล่ทับเนื้อหา */
-            box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);  /* เงาให้ Sidebar ดูเด่น */
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 10px 15px;
-            color: #000000;  /* เปลี่ยนสีข้อความใน Sidebar เป็นสีดำ */
-            text-decoration: none;
-        }
-
-        .sidebar a:hover {
-            background-color: #5a32a3;  /* สีม่วงเข้มขึ้นเมื่อ hover */
-            color: #ffffff;  /* สีข้อความยังคงเป็นสีขาวเมื่อ hover */
-        }
-
-        .sidebar .sidebar-logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .content {
-            padding: 20px;
-            z-index: 500;  /* ให้ content อยู่หลัง Sidebar */
-            color: #000000; /* เปลี่ยนสีข้อความใน Content เป็นสีดำ */
-            transition: opacity 0.3s ease; /* เพิ่มการเคลื่อนไหวในการแสดง/ซ่อนเนื้อหา */
-        }
-
-        .sidebar h4 {
-            color: #000000;  /* เปลี่ยนสีข้อความในหัว Sidebar เป็นสีดำ */
-            text-align: center;
-        }
-
-        .img-banner {
-            width: 100%;
-            height: auto;
-        }
-
-        /* ปรับให้ Sidebar เปิดปิดตามปุ่มในมือถือ */
-        .sidebar.show {
-            transform: translateX(0);  /* ทำให้ Sidebar เคลื่อนที่ไปยังตำแหน่งที่เปิด */
-        }
-
-        /* ปรับสี Navbar ให้เหมือน Sidebar */
-        .navbar {
-            background-color: #6610f2;  /* ใช้สีเดียวกับ Sidebar */
-        }
-
-        .navbar-toggler {
-            border: none;
-        }
-
-        /* ปุ่ม Close ใน Sidebar */
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: transparent;
-            border: none;
-            font-size: 30px;
-            color: #000000;
-            cursor: pointer;
-        }
-
- /* ทำให้ footer อยู่ที่ด้านล่างสุดของ sidebar */
- #footer {
+.sidebar-footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding-top: 1rem; /* เพิ่มช่องว่างด้านบนของ footer */
+    padding: 20px 15px;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
 }
 
-/* ปรับข้อความใน footer */
 .footer-text {
-    font-size: 16px; /* ปรับขนาดตัวหนังสือ */
+    font-size: 14px;
     font-family: 'Sarabun', sans-serif;
     text-align: center;
+    color: #6c757d;
+    margin: 0;
 }
-        /* ซ่อนปุ่ม Toggle ในขนาดหน้าจอที่ใหญ่กว่า */
-        @media (min-width: 768px) {
-            .sidebar {
-                transform: translateX(0);  /* เปิด Sidebar ตลอดเวลาในหน้าจอที่ใหญ่ */
-            }
 
-            .navbar-toggler {
-                display: none;  /* ซ่อนปุ่ม Toggle ในหน้าจอที่ใหญ่ */
-            }
+/* Content Styling */
+.content {
+    padding: 20px;
+    z-index: 500;
+    color: #495057;
+    transition: all 0.3s ease;
+    min-height: 100vh;
+}
 
-            .content {
-                margin-left: 250px;  /* เพิ่ม margin ให้กับเนื้อหาเมื่อ Sidebar เปิดในหน้าจอขนาดใหญ่ */
-            }
+.main-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-            .close-btn {
-                display: none;  /* ซ่อนปุ่มปิดใน Desktop */
-            }
+.banner-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+}
 
-            /* สำหรับ logo ที่แสดงใน Sidebar */
-            .sidebar-logo img {
-                width: 100%;  /* ปรับขนาด logo ให้พอดีกับ Sidebar */
-                height: auto;
-            }
+.img-banner {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+}
 
-            /* ซ่อน Navbar ใน Desktop */
-            .navbar {
-                display: none;  /* ซ่อน Navbar ในขนาดหน้าจอที่ใหญ่ */
-            }
-        }
+.banner-container:hover .img-banner {
+    transform: scale(1.02);
+}
 
-        /* ซ่อนเนื้อหาหลังจากเปิด Sidebar ในมือถือ */
-        @media (max-width: 767px) {
-            .content.hide {
-                opacity: 0;  /* ซ่อนเนื้อหาเมื่อ Sidebar เปิด */
-            }
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
-            /* สำหรับ logo ในมือถือ */
-            .navbar-logo {
-                position: absolute;
-                right: 20px;  /* จัดตำแหน่งให้ logo อยู่ขวาสุด */
-                top: 50%;
-                transform: translateY(-50%);
-                height: 30px;  /* ปรับขนาด logo */
-            }
+.navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+}
 
-            /* ซ่อน logo ใน Sidebar */
-            .sidebar-logo {
-                display: none;
-            }
-        }
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-logo {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 35px;
+    filter: brightness(0) invert(1);
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .content {
+        margin-left: 280px;
+    }
+
+    .close-btn {
+        display: none;
+    }
+
+    .sidebar-logo img {
+        width: 100%;
+        height: auto;
+    }
+
+    .navbar {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .content.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .sidebar-logo {
+        display: none;
+    }
+    
+    .sidebar {
+        width: 280px;
+        transform: translateX(-280px);
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+/* Card Enhancements */
+.card {
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+}
+
+/* Form Enhancements */
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+    border: 2px solid #e9ecef;
+    border-right: none;
+}
+
+/* Badge Enhancements */
+.badge {
+    font-size: 0.85em;
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Success/Error Messages */
+.alert {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Enhancements */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+    background: linear-gradient(#8566ea);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+/* Modal Enhancements */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+/* Pagination Enhancements */
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: none;
+    color: #667eea;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+/* Custom Utilities */
+.text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.border-gradient {
+    border: 2px solid;
+    border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1;
+}

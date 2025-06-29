@@ -548,5 +548,10 @@ def download_plants_excel():
     # Send the file as a response to the user
     return send_file(output, as_attachment=True, download_name="plants_data.xlsx", mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
+@app.route('/history')
+def history():
+    return render_template('history.html')
+    
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=False)
