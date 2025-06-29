@@ -47,26 +47,6 @@
                     <a href="/about" class="sidebar-link"><i class="bi bi-heart-fill me-2"></i> เกี่ยวกับเรา</a>
                 {% endif %}
 
-<<<<<<< HEAD
-        {% if current_user.role == 'user' %}
-        <a href="{{ url_for('index') }}"><i class="bi bi-tree-fill"></i> พรรณไม้ทั้งหมด</a>
-        <a href="/locations"><i class="bi bi-building-fill"></i> จัดการสถานที่</a>
-        <a href="/edit_profile"><i class="bi bi-person-fill"></i> จัดการบัญชี</a>
-        <a href="/contact"><i class="bi bi-telephone-fill"></i> ติดต่อ</a>
-        <a href="/about"><i class="bi bi-heart-fill"></i> เกี่ยวกับเรา</a>
-        {% endif %}
-        <a href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a>
-        
-        {% else %}
-
-        <a href="/locations"><i class="bi bi-house-fill"></i> หน้าแรก</a>
-        <a href="/history"><i class="bi bi-book-fill"></i> ประวัติความเป็นมา</a>
-        <a href="/index"><i class="bi bi-tree-fill"></i> พรรณไม้ทั้งหมด</a>
-        <a href="/contact"><i class="bi bi-telephone-fill"></i> ติดต่อ</a>
-        <a href="/about"><i class="bi bi-heart-fill"></i> เกี่ยวกับเรา</a>
-        <a href="{{ url_for('login') }}"><i class="bi bi-universal-access"></i> เข้าสู่ระบบผู้ดูแลระบบ</a>
-        {% endif %}
-=======
                 {% if current_user.role == 'user' %}
                     <a href="{{ url_for('index') }}" class="sidebar-link"><i class="bi bi-tree-fill me-2"></i> พรรณไม้ทั้งหมด</a>
                     <a href="/locations" class="sidebar-link"><i class="bi bi-building-fill me-2"></i> จัดการสถานที่</a>
@@ -84,7 +64,6 @@
                 <a href="{{ url_for('login') }}" class="sidebar-link text-primary"><i class="bi bi-universal-access me-2"></i> เข้าสู่ระบบผู้ดูแลระบบ</a>
             {% endif %}
         </div>
->>>>>>> d9e70657689c9ff8bd005f9ec01fcd7bbffb22a7
 
         <!-- Footer -->
         <footer class="sidebar-footer">
