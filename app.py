@@ -470,11 +470,12 @@ def index():
             Plant.local_name.ilike(f'%{query}%') |
             Plant.scientific_name.ilike(f'%{query}%') |
             Plant.family.ilike(f'%{query}%')
-        ).all()
+        ).order_by(Plant.id_flower).all()
     else:
-        plants = Plant.query.all()
+        plants = Plant.query.order_by(Plant.id_flower).all()
 
     return render_template('index.html', plants=plants)
+
 
 @app.route('/contact')
 def contact():
