@@ -131,19 +131,21 @@
                         </label>
                         <div class="input-group input-group-lg">
                             <input type="file" 
-                                   name="image" 
-                                   accept="image/*" 
-                                   class="form-control"
-                                   id="imageInput">
+                                name="images[]" 
+                                accept="image/*" 
+                                class="form-control"
+                                id="imageInput"
+                                multiple>
                             <label class="input-group-text" for="imageInput">
                                 <i class="bi bi-upload"></i>
                             </label>
                         </div>
                         <div class="form-text">
                             <i class="bi bi-info-circle me-1"></i>
-                            รองรับไฟล์รูปภาพ: JPG, PNG, GIF ขนาดไม่เกิน 5MB
+                            รองรับไฟล์รูปภาพ: JPG, PNG, GIF ขนาดไม่เกิน 5MB ต่อไฟล์ และสามารถเลือกได้หลายไฟล์
                         </div>
                     </div>
+                    
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg me-md-2">

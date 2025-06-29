@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, abo
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -19,12 +20,13 @@ app.config['UPLOAD_FOLDER'] = os.path.join('static', 'flower')
 
 # Initializing Flask extensions
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 
-# User model
+# User Model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -38,6 +40,15 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
+# Location Model
+class Location(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    location_name = db.Column(db.String(100), nullable=False)
+    location_image = db.Column(db.String(200), nullable=True)
+
+
+
+# Plant Model
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_flower = db.Column(db.String(100), nullable=False)
@@ -46,17 +57,16 @@ class Plant(db.Model):
     family = db.Column(db.String(50), nullable=False)
     habit = db.Column(db.String(50), nullable=False)
     characteristics = db.Column(db.Text, nullable=False)
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)  # Use ForeignKey
-    image_url = db.Column(db.String(200), nullable=True)
-    
-    location = db.relationship('Location', backref='plants', lazy=True)  # Define relationship with Location
+    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
 
-# Location Model
-class Location(db.Model):
+    location = db.relationship('Location', backref='plants', lazy=True)
+    images = db.relationship('PlantImage', backref='plant', lazy=True, cascade="all, delete-orphan")
+
+# New: PlantImage Model (แยกรูปออกจาก Plant)
+class PlantImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    location_name = db.Column(db.String(100), nullable=False)
-    location_image = db.Column(db.String(200), nullable=True)
-
+    image_url = db.Column(db.String(200), nullable=False)
+    plant_id = db.Column(db.Integer, db.ForeignKey('plant.id'), nullable=False)
 
 
 with app.app_context():
@@ -228,48 +238,52 @@ def allowed_file(filename):
 @login_required
 def edit_plant(plant_id):
     plant = Plant.query.get_or_404(plant_id)
-    locations = Location.query.all()  # Get all locations
+    locations = Location.query.all()
 
     if request.method == 'POST':
-        # Ensure form data exists before updating
-        plant.id_flower = request.form.get('id_flower', plant.id_flower)
-        plant.local_name = request.form.get('local_name', plant.local_name)
-        plant.scientific_name = request.form.get('scientific_name', plant.scientific_name)
-        plant.family = request.form.get('family', plant.family)
-        plant.habit = request.form.get('habit', plant.habit)
-        plant.characteristics = request.form.get('characteristics', plant.characteristics)
-        plant.location_id = request.form.get('location', plant.location_id)  # Use selected location_id
-
-        # Handle image upload
-        if 'image' in request.files:
-            image = request.files['image']
-            if image and allowed_file(image.filename):  # Ensure the file is an allowed type
-                # Generate a unique filename using UUID
-                extension = os.path.splitext(image.filename)[1]
-                unique_filename = f"{uuid.uuid4().hex}{extension}"
-                
-                # Secure the filename and save it
-                image_filename = secure_filename(unique_filename)
-                image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
-                image.save(image_path)
-                
-                # Save the image URL in the database
-                plant.image_url = f'flower/{image_filename}'  # Use 'flower/' as folder prefix
-
         try:
+            # --- อัปเดตข้อมูลพื้นฐานของพรรณไม้ ---
+            plant.id_flower = request.form.get('id_flower', plant.id_flower)
+            plant.local_name = request.form.get('local_name', plant.local_name)
+            plant.scientific_name = request.form.get('scientific_name', plant.scientific_name)
+            plant.family = request.form.get('family', plant.family)
+            plant.habit = request.form.get('habit', plant.habit)
+            plant.characteristics = request.form.get('characteristics', plant.characteristics)
+            plant.location_id = request.form.get('location', plant.location_id)
+
+            # --- อัปโหลดภาพใหม่ (ไม่ลบของเดิม) ---
+            uploaded_images = request.files.getlist('images[]')
+            for image_file in uploaded_images:
+                if image_file and allowed_file(image_file.filename):
+                    ext = os.path.splitext(image_file.filename)[1]
+                    unique_filename = f"{uuid.uuid4().hex}{ext}"
+                    image_filename = secure_filename(unique_filename)
+                    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
+                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                    image_file.save(image_path)
+
+                    image_url = f'flower/{image_filename}'
+
+                    # บันทึกภาพใหม่ลงฐานข้อมูล
+                    new_image = PlantImage(image_url=image_url, plant_id=plant.id)
+                    db.session.add(new_image)
+
             db.session.commit()
-            flash('ข้อมูลพรรณไม้ถูกอัปเดตแล้ว!', 'success')
-            return redirect(url_for('index'))
+            flash('แก้ไขข้อมูลพรรณไม้เรียบร้อยแล้ว!', 'success')
+            return redirect(url_for('edit_plant', plant_id=plant.id))
+
         except Exception as e:
             db.session.rollback()
-            flash('เกิดข้อผิดพลาดในการอัปเดตข้อมูล!', 'danger')
+            flash(f'เกิดข้อผิดพลาด: {str(e)}', 'danger')
 
     return render_template('edit_plant.html', plant=plant, locations=locations)
+
+
 
 @app.route('/add_plant', methods=['GET', 'POST'])
 @login_required
 def add_plant():
-    locations = Location.query.all()  # Fetch all locations from the database
+    locations = Location.query.all()
     if request.method == 'POST':
         id_flower = request.form['id_flower']
         local_name = request.form['local_name']
@@ -277,24 +291,9 @@ def add_plant():
         family = request.form['family']
         habit = request.form['habit']
         characteristics = request.form['characteristics']
-        location_id = request.form['location']  # Get selected location's ID from dropdown
-        image_file = request.files['image']
-        image_url = None
+        location_id = request.form['location']
 
-        # Handle file upload
-        if image_file and allowed_file(image_file.filename):
-            # Generate a unique filename using UUID
-            extension = os.path.splitext(image_file.filename)[1]
-            unique_filename = f"{uuid.uuid4().hex}{extension}"
-            
-            # Secure the filename and save it
-            image_filename = secure_filename(unique_filename)
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            image_file.save(image_path)
-            image_url = f'flower/{image_filename}'  # Save the path as 'flower/filename'
-
-        # Create a new plant entry with the location_id foreign key
+        # เพิ่มข้อมูลลงตาราง Plant ก่อน
         new_plant = Plant(
             id_flower=id_flower,
             local_name=local_name,
@@ -302,12 +301,32 @@ def add_plant():
             family=family,
             habit=habit,
             characteristics=characteristics,
-            location_id=location_id,  # Use location_id instead of location_name
-            image_url=image_url,  # Store the image URL
+            location_id=location_id
         )
         db.session.add(new_plant)
         db.session.commit()
-        flash('Plant added successfully!', 'success')
+
+        # รับไฟล์ภาพทั้งหมดจาก input multiple
+        images = request.files.getlist('images[]')
+
+        for image_file in images:
+            if image_file and allowed_file(image_file.filename):
+                ext = os.path.splitext(image_file.filename)[1]
+                unique_filename = f"{uuid.uuid4().hex}{ext}"
+                image_filename = secure_filename(unique_filename)
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                image_file.save(image_path)
+
+                image_url = f'flower/{image_filename}'  # หรือปรับตาม path ที่คุณใช้
+
+                # เพิ่มเข้า PlantImage
+                plant_image = PlantImage(image_url=image_url, plant_id=new_plant.id)
+                db.session.add(plant_image)
+
+        db.session.commit()
+
+        flash('เพิ่มข้อมูลพรรณไม้และรูปภาพเรียบร้อยแล้ว!', 'success')
         return redirect(url_for('index'))
 
     return render_template('add_plant.html', locations=locations)
@@ -362,6 +381,26 @@ def add_plants_from_excel(file_path):
 
     # บันทึกข้อมูลทั้งหมดลงในฐานข้อมูล
     db.session.commit()
+
+@app.route('/delete_plant_image/<int:image_id>/<int:plant_id>', methods=['POST'])
+@login_required
+def delete_plant_image(image_id, plant_id):
+    image = PlantImage.query.get_or_404(image_id)
+
+    # ลบไฟล์จากระบบ (ถ้ามีอยู่จริง)
+    try:
+        image_path = os.path.join(app.static_folder, image.image_url)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+    except Exception as e:
+        flash(f"เกิดข้อผิดพลาดในการลบไฟล์ภาพ: {e}", 'danger')
+
+    # ลบ record ในฐานข้อมูล
+    db.session.delete(image)
+    db.session.commit()
+    flash("ลบรูปภาพเรียบร้อยแล้ว", "success")
+    return redirect(url_for('edit_plant', plant_id=plant_id))
+
 
 
 #ลบต้นไม้
@@ -419,15 +458,22 @@ def insert_location():
     return render_template('add_location.html')
 
 @app.route('/manage_plant')
-
 def manage_plant():
     plants = Plant.query.all()
     return render_template('manage_plant.html', plants=plants)
 
 @app.route('/index', methods=['GET'])
-
 def index():
-    plants = Plant.query.all()
+    query = request.args.get('q', '')
+    if query:
+        plants = Plant.query.filter(
+            Plant.local_name.ilike(f'%{query}%') |
+            Plant.scientific_name.ilike(f'%{query}%') |
+            Plant.family.ilike(f'%{query}%')
+        ).all()
+    else:
+        plants = Plant.query.all()
+
     return render_template('index.html', plants=plants)
 
 @app.route('/contact')
@@ -436,13 +482,11 @@ def contact():
 
 # Route: แสดงสถานที่ทั้งหมด
 @app.route('/locations')
-
 def show_locations():
     locations = Location.query.all()
     return render_template('locations.html', locations=locations)
 
 @app.route('/location/<int:location_id>')
-
 def show_plants_in_location(location_id):
     # ค้นหาข้อมูลสถานที่จากฐานข้อมูล
     location = Location.query.get_or_404(location_id)
@@ -512,7 +556,6 @@ def edit_location(location_id):
     return render_template('edit_location.html', location=location)
 
 @app.route('/location/<int:location_id>', methods=['GET'])
-
 def display_plants_in_location(location_id):
     location = Location.query.get_or_404(location_id)
     plants = Plant.query.filter_by(location_id=location_id).all()
@@ -554,4 +597,4 @@ def history():
     
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5000,debug=False)
+    app.run(host='0.0.0.0',port=5000,debug=True)

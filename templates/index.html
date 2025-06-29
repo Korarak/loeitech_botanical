@@ -18,17 +18,22 @@
             <!-- Search Box -->
             <div class="row mb-4">
                 <div class="col-md-6 mx-auto">
-                    <div class="input-group input-group-lg shadow-sm">
-                        <span class="input-group-text bg-primary text-white border-0">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control border-0" id="plantSearch" placeholder="ค้นหาพรรณไม้..." aria-label="Search plants">
-                        <button class="btn btn-outline-secondary border-0" type="button">
-                            <i class="bi bi-funnel"></i>
-                        </button>
-                    </div>
+                    
+                        <form method="GET" action="{{ url_for('index') }}">
+                            <div class="input-group input-group-lg shadow-sm">
+                                <span class="input-group-text bg-primary text-white border-0">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control border-0" name="q" placeholder="ค้นหาพรรณไม้..." value="{{ request.args.get('q', '') }}">
+                                <button class="btn btn-outline-secondary border-0" type="submit">
+                                    <i class="bi bi-funnel"></i>
+                                </button>
+                            </div>
+                        </form>
+                    
                 </div>
             </div>
+            
             
             {% if current_user.is_authenticated %}
                 {% if current_user.role == 'admin' %}
@@ -41,9 +46,9 @@
                             <a href="{{ url_for('add_plant') }}" class="btn btn-success btn-lg">
                                 <i class="bi bi-plus-square-fill me-2"></i>เพิ่มพรรณไม้
                             </a>
-                            <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary btn-lg">
+<!--                             <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary btn-lg">
                                 <i class="bi bi-file-earmark-excel-fill me-2"></i>อัปโหลด Excel
-                            </a>
+                            </a> -->
                             <a href="/manage_plant" class="btn btn-primary btn-lg">
                                 <i class="bi bi-table me-2"></i>แสดงผลแบบตาราง
                             </a>
@@ -65,9 +70,9 @@
                             <a href="{{ url_for('add_plant') }}" class="btn btn-success btn-lg">
                                 <i class="bi bi-plus-square-fill me-2"></i>เพิ่มพรรณไม้
                             </a>
-                            <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary btn-lg">
+                            <!-- <a href="{{ url_for('upload_excel') }}" class="btn btn-secondary btn-lg">
                                 <i class="bi bi-file-earmark-excel-fill me-2"></i>อัปโหลด Excel
-                            </a>
+                            </a> -->
                             <a href="/manage_plant" class="btn btn-primary btn-lg">
                                 <i class="bi bi-table me-2"></i>แสดงผลแบบตาราง
                             </a>
@@ -100,13 +105,13 @@
                 {% for plant in plants %}
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                        {% if plant.image_url %}
-                        <div class="card-img-top-container">
-                            <img src="{{ url_for('static', filename=plant.image_url) }}" 
-                                 alt="{{ plant.local_name }}" 
-                                 class="card-img-top rounded-top-3" 
-                                 style="height: 250px; object-fit: cover;">
-                        </div>
+                        {% if plant.images|length > 0 %}
+                            <div class="card-img-top-container">
+                                <img src="{{ url_for('static', filename=plant.images[0].image_url) }}" 
+                                    alt="{{ plant.local_name }}" 
+                                    class="card-img-top rounded-top-3" 
+                                    style="height: 250px; object-fit: cover;">
+                            </div>
                         {% else %}
                         <div class="d-flex align-items-center justify-content-center bg-light rounded-top-3" style="height: 250px;">
                             <div class="text-center">

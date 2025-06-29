@@ -15,40 +15,98 @@
     </div>
     {% endif %}
 
-    <!-- Display Plants -->
-    <div class="row g-4">
-        {% for plant in plants %}
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                {% if plant.image_url %}
-                    <img src="{{ url_for('static', filename=plant.image_url.replace('static/', '')) }}" alt="{{ plant.local_name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                {% else %}
-                    <div class="d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
-                        <span class="text-muted">ไม่มีรูป</span>
+                <!-- แสดงรายการพรรณไม้ในรูปแบบการ์ด -->
+            <div class="row g-4">
+                {% for plant in plants %}
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                        {% if plant.images|length > 0 %}
+                            <div class="card-img-top-container">
+                                <img src="{{ url_for('static', filename=plant.images[0].image_url) }}" 
+                                    alt="{{ plant.local_name }}" 
+                                    class="card-img-top rounded-top-3" 
+                                    style="height: 250px; object-fit: cover;">
+                            </div>
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light rounded-top-3" style="height: 250px;">
+                            <div class="text-center">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">ไม่มีรูป</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-primary fw-bold mb-3">{{ plant.local_name }}</h5>
+                            <div class="card-text flex-grow-1">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-12">
+                                        <small class="text-muted fw-semibold">
+                                            <i class="bi bi-hash me-1"></i>รหัสพรรณไม้:
+                                        </small>
+                                        <span class="badge bg-secondary">{{ plant.id_flower }}</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted fw-semibold">
+                                            <i class="bi bi-flower1 me-1"></i>ชื่อวิทยาศาสตร์:
+                                        </small>
+                                        <p class="mb-1 fst-italic">{{ plant.scientific_name }}</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted fw-semibold">
+                                            <i class="bi bi-diagram-3 me-1"></i>ชื่อวงศ์:
+                                        </small>
+                                        <p class="mb-1">{{ plant.family }}</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted fw-semibold">
+                                            <i class="bi bi-tree me-1"></i>ลักษณะวิสัย:
+                                        </small>
+                                        <p class="mb-1">{{ plant.habit }}</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted fw-semibold">
+                                            <i class="bi bi-star me-1"></i>ลักษณะเด่น:
+                                        </small>
+                                        <p class="mb-1">{{ plant.characteristics }}</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted fw-semibold">
+                                            <i class="bi bi-geo-alt me-1"></i>บริเวณที่พบ:
+                                        </small>
+                                        <span class="badge bg-info">{{ plant.location.location_name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <a href="{{ url_for('plant_details', id=plant.id) }}" 
+                                   class="btn btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-eye me-2"></i>ดูรายละเอียด
+                                </a>
+                                
+                                {% if current_user.role == 'admin' %}
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" 
+                                       class="btn btn-warning flex-fill">
+                                        <i class="bi bi-pencil-square me-1"></i>แก้ไข
+                                    </a>
+                                    <form action="{{ url_for('delete_plant', id=plant.id) }}" 
+                                          method="post" 
+                                          onsubmit="return confirmDelete()" 
+                                          class="flex-fill">
+                                        <button type="submit" class="btn btn-danger w-100">
+                                            <i class="bi bi-trash-fill me-1"></i>ลบ
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ plant.local_name }}</h5>
-                    <p class="card-text">
-                        <strong>รหัสพรรณไม้:</strong> {{ plant.id_flower }}<br>
-                        <strong>ชื่อวิทยาศาสตร์:</strong> {{ plant.scientific_name }}<br>
-                        <strong>ชื่อวงศ์:</strong> {{ plant.family }}<br>
-                        <strong>ลักษณะวิสัย:</strong> {{ plant.habit }}<br>
-                        <strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}
-                    </p>
-                    <a href="{{ url_for('plant_details', id=plant.id) }}" class="btn btn-link"><i class="bi bi-eye"></i> ดูรายละเอียด</a>
                 </div>
-                {% if current_user.role == 'admin' %}
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" class="btn btn-info btn-sm">แก้ไข</a>
-                    <form action="{{ url_for('delete_plant', id=plant.id) }}" method="post" onsubmit="return confirmDelete()">
-                        <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
-                    </form>
-                </div>
-                {% endif %}
+                {% endfor %}
             </div>
-        </div>
-        {% endfor %}
     </div>
 </div>
 {% endblock %}

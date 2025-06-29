@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %} รายละเอียดพรรณไม้ {{ plant.local_name }} -เว็ปสวนพฤษศาสตร์{% endblock %}
+{% block title %} รายละเอียดพรรณไม้ {{ plant.local_name }} - เว็ปสวนพฤกษศาสตร์{% endblock %}
 {% block content %}
 <div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
 
@@ -13,16 +13,39 @@
 <p><strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}</p>
 <p><strong>บริเวณที่พบ:</strong> {{ plant.location.location_name }}</p>
 
-<!-- แสดงภาพของพรรณไม้ (ถ้ามี) -->
-{% if plant.image_url %}
-    <img src="{{ url_for('static', filename=plant.image_url) }}" alt="{{ plant.local_name }}" class="img-fluid border border-secondary rounded" style="max-width: 300px; max-height: 200px;">
+<!-- แสดงภาพทั้งหมด -->
+<h5 class="mt-4"><i class="bi bi-images me-1"></i>รูปภาพ</h5>
+{% if plant.images|length > 0 %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for image in plant.images %}
+    <div class="col">
+        <div class="card border-0 shadow-sm">
+            <a href="{{ url_for('static', filename=image.image_url) }}" target="_blank">
+                <img src="{{ url_for('static', filename=image.image_url) }}" 
+                     alt="{{ plant.local_name }}" 
+                     class="card-img-top rounded" 
+                     style="height: 200px; object-fit: cover;">
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% else %}
-    <p>ไม่มีรูปภาพ</p>
+<p class="text-muted">ไม่มีรูปภาพ</p>
 {% endif %}
-<div>
-<!-- ปุ่ม "ไปต่อไป" -->
-<a href="{{ url_for('show_plants_in_location', location_id=plant.location.id) }}" class="btn btn-warning mt-3"><i class="bi bi-backspace"></i> กลับไปยังพื้นที่พรรณไม้</a>
-<a href="{{ url_for('index') }}" class="btn btn-danger mt-3"><i class="bi bi-backspace-fill"></i> กลับไปยังรายการพรรณไม้ทั้งหมด</a>
+
+<!-- ปุ่มกลับ -->
+<div class="mt-4">
+    <a href="{{ url_for('show_plants_in_location', location_id=plant.location.id) }}" class="btn btn-warning">
+        <i class="bi bi-backspace"></i> กลับไปยังพื้นที่พรรณไม้
+    </a>
+    <a href="{{ url_for('index') }}" class="btn btn-danger">
+        <i class="bi bi-backspace-fill"></i> กลับไปยังรายการพรรณไม้ทั้งหมด
+    </a>
 </div>
+
 </div>
+
+
 {% endblock %}
+

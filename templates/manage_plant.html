@@ -65,10 +65,13 @@
                     <td>{{ plant.characteristics }}</td>
                     <td>{{ plant.location.location_name }}</td>
                     <td>
-                        {% if plant.image_url %}
-                            <img src="{{ url_for('static', filename=plant.image_url.replace('static/', '')) }}" alt="{{ plant.local_name }}" style="width: 60px;">
+                        {% if plant.images|length > 0 %}
+                                <img src="{{ url_for('static', filename=plant.images[0].image_url) }}" 
+                                    alt="{{ plant.local_name }}" 
+                                    class="card-img-top rounded-top-3" 
+                                    style="height: 150px; object-fit: cover;">
                         {% else %}
-                            <span>ไม่มีรูป</span>
+                                <p class="text-muted mt-2">ไม่มีรูป</p>
                         {% endif %}
                     </td>
                     <td>

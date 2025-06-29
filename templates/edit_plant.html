@@ -47,18 +47,40 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="image">Image:</label>
-            {% if plant.image_url %}
-                <div>
-                    <img src="{{ url_for('static', filename=plant.image_url.replace('static/', '')) }}" alt="{{ plant.local_name }}" width="150"><br>
-                    <small>กดปุ่มเพื่อเปลี่ยนภาพ</small>
-                </div>
-            {% endif %}
-            <input type="file" class="form-control" name="image" id="image"><br>
-        </div>
+    <div class="form-group">
+    <label>เพิ่ม รูปภาพพรรณไม้</label>
+
+    <input type="file" class="form-control mt-2" name="images[]" id="images" multiple accept="image/*">
+    
+</div>
 
         <button type="submit" class="btn btn-success">บันทึก</button>
     </form>
+    แก้ไขภาพพรรณไม้
+    {% if plant.images|length > 0 %}
+        <div class="row g-3 mb-3">
+            {% for image in plant.images %}
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card border-0 shadow-sm">
+                        <a href="{{ url_for('static', filename=image.image_url) }}" target="_blank">
+                            <img src="{{ url_for('static', filename=image.image_url) }}" 
+                                 alt="{{ plant.local_name }}" 
+                                 class="card-img-top rounded"
+                                 style="height: 150px; object-fit: cover;">
+                        </a>
+                        <div class="card-body text-center p-2">
+                            <form action="{{ url_for('delete_plant_image', image_id=image.id, plant_id=plant.id) }}" method="POST" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบภาพนี้?');">
+                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                    <i class="bi bi-trash"></i> ลบรูป
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">ยังไม่มีรูปภาพ</p>
+    {% endif %}
 </div>
 {% endblock %}
