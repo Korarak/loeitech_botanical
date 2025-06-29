@@ -74,7 +74,7 @@ class PlantImage(db.Model):
 with app.app_context():
     db.create_all()
         # 🔐 Auto-create admin if none exists
-    if not User.query.filter_by(email='admin@example.com').first():
+"""     if not User.query.filter_by(email='admin@example.com').first():
         admin = User(
             username='admin',
             email='admin@example.com',
@@ -83,7 +83,7 @@ with app.app_context():
         admin.set_password('adminpassword')
         db.session.add(admin)
         db.session.commit()
-        print("✅ Admin created: admin@example.com / adminpassword")
+        print("✅ Admin created: admin@example.com / adminpassword") """
 
 
 @login_manager.user_loader
