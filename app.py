@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_default_secret_key')
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@172.23.0.3:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
