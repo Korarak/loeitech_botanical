@@ -14,9 +14,9 @@ app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_default_secret_key')
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@172.23.0.3:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@172.23.0.3:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'flower')
 
@@ -608,6 +608,14 @@ def download_plants_excel():
 @app.route('/history')
 def history():
     return render_template('history.html')
+
+@app.route('/activities/2567')
+def activities_2567():
+    return render_template('activities_2567.html')
+
+@app.route('/activities/2568')
+def activities_2568():
+    return render_template('activities_2568.html')
     
 
 if __name__ == '__main__':
