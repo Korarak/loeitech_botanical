@@ -64,6 +64,7 @@
                             <img src="{{ url_for('static', filename=plant.images[0].image_url) }}" 
                                  alt="{{ plant.local_name }}" 
                                  class="card-img-top rounded-top-3" 
+                                 loading="lazy"
                                  style="height: 250px; object-fit: cover;">
                         </div>
                         {% else %}
