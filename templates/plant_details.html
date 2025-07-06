@@ -18,7 +18,8 @@
         <div class="col-12 col-md-8">
             <p><strong>รหัสพรรณไม้:</strong>  <span class="badge bg-secondary">{{ plant.id_flower }}</span> </p>
             <p><strong>ชื่อท้องถิ่น:</strong> {{ plant.local_name }}</p>
-            <p><strong>ชื่อวิทยาศาสตร์:</strong> <span class="mb-1 fst-italic">{{ plant.scientific_name }}</span></p>
+            <p><strong>ชื่อวิทยาศาสตร์:</strong> <span class="mb-1 fst-italic">{{ plant.scientific_name }}</span> 
+                <span class="mb-1 fst">{{ plant.scientific_surname }}</span> </p>
             <p><strong>ชื่อวงศ์:</strong> {{ plant.family }}</p>
             <p><strong>ลักษณะวิสัย:</strong> {{ plant.habit }}</p>
             <p><strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}</p>
@@ -67,7 +68,7 @@
     const qr = new QRious({
         element: document.getElementById('qrcode'),
         value: window.location.href,
-        size: 200,
+        size: 150,
         background: 'white',
         foreground: 'black'
     });

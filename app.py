@@ -59,6 +59,7 @@ class Plant(db.Model):
     id_flower = db.Column(db.String(100), nullable=False)
     local_name = db.Column(db.String(50), nullable=False)
     scientific_name = db.Column(db.String(100), nullable=False)
+    scientific_surname = db.Column(db.String(100), nullable=True)
     family = db.Column(db.String(50), nullable=False)
     habit = db.Column(db.String(50), nullable=False)
     characteristics = db.Column(db.Text, nullable=False)
@@ -262,6 +263,7 @@ def edit_plant(plant_id):
             plant.id_flower = request.form.get('id_flower', plant.id_flower)
             plant.local_name = request.form.get('local_name', plant.local_name)
             plant.scientific_name = request.form.get('scientific_name', plant.scientific_name)
+            plant.scientific_surname = request.form.get('scientific_surname', plant.scientific_surname)
             plant.family = request.form.get('family', plant.family)
             plant.habit = request.form.get('habit', plant.habit)
             plant.characteristics = request.form.get('characteristics', plant.characteristics)
@@ -304,6 +306,7 @@ def add_plant():
         id_flower = request.form['id_flower']
         local_name = request.form['local_name']
         scientific_name = request.form['scientific_name']
+        scientific_surname = request.form['scientific_surname']
         family = request.form['family']
         habit = request.form['habit']
         characteristics = request.form['characteristics']
@@ -317,7 +320,8 @@ def add_plant():
             family=family,
             habit=habit,
             characteristics=characteristics,
-            location_id=location_id
+            location_id=location_id,
+            scientific_surname=scientific_surname
         )
         db.session.add(new_plant)
         db.session.commit()

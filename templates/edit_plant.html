@@ -17,8 +17,13 @@
         </div>
 
         <div class="form-group">
-            <label for="scientific_name">ชื่อวิทยาศาสตร์</label>
+            <label for="scientific_name">ชื่อวิทยาศาสตร์ (ตัวเอียง)</label>
             <input type="text" id="scientific_name" name="scientific_name" class="form-control" value="{{ plant.scientific_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="scientific_name">ชื่อวิทยาศาสตร์ (ต่อ)</label>
+            <input type="text" id="scientific_surname" name="scientific_surname" class="form-control" value="{{ plant.scientific_surname }}" required>
         </div>
 
         <div class="form-group">
