@@ -8,7 +8,9 @@ import os
 import pandas as pd
 from io import BytesIO
 import uuid
-
+import qrcode
+import io
+from flask import send_file, url_for
 
 app = Flask(__name__)
 
@@ -618,7 +620,18 @@ def activities_2567():
 @app.route('/activities/2568')
 def activities_2568():
     return render_template('activities_2568.html')
-    
+
+@app.route('/plant_qrcode/<int:id>')
+def plant_qrcode(id):
+    plant = Plant.query.get_or_404(id)
+    url = url_for('plant_details', id=id, _external=True)  # ใช้ชื่อ endpoint = 'plant_details'
+
+    img = qrcode.make(url)
+    buf = io.BytesIO()
+    img.save(buf)
+    buf.seek(0)
+
+    return send_file(buf, mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)

@@ -1,51 +1,75 @@
 {% extends "layout.html" %}
 {% block title %} รายละเอียดพรรณไม้ {{ plant.local_name }} - เว็ปสวนพฤกษศาสตร์{% endblock %}
 {% block content %}
-<div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
+<div class="container mt-4 p-4 border rounded shadow-sm bg-white">
 
-<h2>รายละเอียดพรรณไม้</h2>
+    <h2 class="mb-4 text-center">รายละเอียดพรรณไม้</h2>
 
-<!-- แสดงข้อมูลพรรณไม้ -->
-<p><strong>ชื่อท้องถิ่น:</strong> {{ plant.local_name }}</p>
-<p><strong>ชื่อวิทยาศาสตร์:</strong> {{ plant.scientific_name }}</p>
-<p><strong>ชื่อวงศ์:</strong> {{ plant.family }}</p>
-<p><strong>ลักษณะวิสัย:</strong> {{ plant.habit }}</p>
-<p><strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}</p>
-<p><strong>บริเวณที่พบ:</strong> {{ plant.location.location_name }}</p>
+    <!-- Responsive Row: QR Code + Text Info -->
+    <div class="row g-4">
+        <!-- Left: QR Code -->
+        <div class="col-12 col-md-4 text-center">
+            <h5><i class="bi bi-qr-code me-1"></i>QR Code {{ plant.id_flower }}</h5>
+            <img src="{{ url_for('plant_qrcode', id=plant.id) }}" alt="QR Code" class="img-fluid mb-3">
+            <canvas id="qrcode" style="display: none;"></canvas>
+        </div>
 
-<!-- แสดงภาพทั้งหมด -->
-<h5 class="mt-4"><i class="bi bi-images me-1"></i>รูปภาพ</h5>
-{% if plant.images|length > 0 %}
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        {% for image in plant.images %}
-    <div class="col">
-        <div class="card border-0 shadow-sm">
-            <a href="{{ url_for('static', filename=image.image_url) }}" target="_blank">
-                <img src="{{ url_for('static', filename=image.image_url) }}" 
-                     alt="{{ plant.local_name }}" 
-                     class="card-img-top rounded" 
-                     style="height: 200px; object-fit: cover;">
-            </a>
+        <!-- Right: Text Details -->
+        <div class="col-12 col-md-8">
+            <p><strong>รหัสพรรณไม้:</strong>  <span class="badge bg-secondary">{{ plant.id_flower }}</span> </p>
+            <p><strong>ชื่อท้องถิ่น:</strong> {{ plant.local_name }}</p>
+            <p><strong>ชื่อวิทยาศาสตร์:</strong> <span class="mb-1 fst-italic">{{ plant.scientific_name }}</span></p>
+            <p><strong>ชื่อวงศ์:</strong> {{ plant.family }}</p>
+            <p><strong>ลักษณะวิสัย:</strong> {{ plant.habit }}</p>
+            <p><strong>ลักษณะเด่น:</strong> {{ plant.characteristics }}</p>
+            <p><strong>บริเวณที่พบ:</strong> <span class="badge bg-info">{{ plant.location.location_name }}</span></p>
         </div>
     </div>
-    {% endfor %}
+
+    <!-- รูปภาพ -->
+    <div class="mt-5">
+        <h5><i class="bi bi-images me-1"></i>รูปภาพ</h5>
+        {% if plant.images|length > 0 %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for image in plant.images %}
+            <div class="col">
+                <div class="card border-0 shadow-sm h-100">
+                    <a href="{{ url_for('static', filename=image.image_url) }}" target="_blank">
+                        <img src="{{ url_for('static', filename=image.image_url) }}"
+                             alt="{{ plant.local_name }}"
+                             class="card-img-top rounded"
+                             style="height: 200px; object-fit: cover;">
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">ไม่มีรูปภาพ</p>
+        {% endif %}
+    </div>
+
+    <!-- ปุ่มกลับ -->
+    <div class="mt-4 d-flex flex-column flex-md-row justify-content-between gap-2">
+        <a href="{{ url_for('show_plants_in_location', location_id=plant.location.id) }}" class="btn btn-warning w-100 w-md-auto">
+            <i class="bi bi-backspace"></i> กลับไปยังพื้นที่พรรณไม้
+        </a>
+        <a href="{{ url_for('index') }}" class="btn btn-danger w-100 w-md-auto">
+            <i class="bi bi-backspace-fill"></i> กลับไปยังรายการพรรณไม้ทั้งหมด
+        </a>
+    </div>
+
 </div>
-{% else %}
-<p class="text-muted">ไม่มีรูปภาพ</p>
-{% endif %}
 
-<!-- ปุ่มกลับ -->
-<div class="mt-4">
-    <a href="{{ url_for('show_plants_in_location', location_id=plant.location.id) }}" class="btn btn-warning">
-        <i class="bi bi-backspace"></i> กลับไปยังพื้นที่พรรณไม้
-    </a>
-    <a href="{{ url_for('index') }}" class="btn btn-danger">
-        <i class="bi bi-backspace-fill"></i> กลับไปยังรายการพรรณไม้ทั้งหมด
-    </a>
-</div>
-
-</div>
-
-
+<!-- JS: QR Code -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+    const qr = new QRious({
+        element: document.getElementById('qrcode'),
+        value: window.location.href,
+        size: 200,
+        background: 'white',
+        foreground: 'black'
+    });
+</script>
 {% endblock %}
-
