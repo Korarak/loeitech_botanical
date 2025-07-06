@@ -16,7 +16,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_default_secret_key')
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@172.31.0.2:5432/postgres'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@172.31.0.2:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@192.168.10.114:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'flower')
 
@@ -472,7 +473,7 @@ def insert_location():
 
 @app.route('/manage_plant')
 def manage_plant():
-    plants = Plant.query.all()
+    plants = Plant.query.order_by(Plant.id_flower).all()
     return render_template('manage_plant.html', plants=plants)
 
 @app.route('/index', methods=['GET'])
@@ -505,10 +506,11 @@ def show_plants_in_location(location_id):
     # ค้นหาข้อมูลสถานที่จากฐานข้อมูล
     location = Location.query.get_or_404(location_id)
     
-    # ค้นหาพรรณไม้ที่เกี่ยวข้องกับสถานที่นั้น
-    plants = Plant.query.filter_by(location_id=location.id).all()
+    # ค้นหาพรรณไม้ที่เกี่ยวข้องกับสถานที่นั้น และเรียงตาม id_flower
+    plants = Plant.query.filter_by(location_id=location.id).order_by(Plant.id_flower).all()
     
     return render_template('plants_in_location.html', location=location, plants=plants)
+
 
 @app.route('/delete_location/<int:location_id>', methods=['POST'])
 def delete_location(location_id):
