@@ -15,11 +15,8 @@ from flask import send_file, url_for
 app = Flask(__name__)
 
 # Configuration
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_default_secret_key')
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@172.31.0.2:5432/postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://admin:mysecretpassword@192.168.10.114:5432/postgres'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'flower')
 
@@ -127,7 +124,7 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        role = 'admin'
+        role = 'user'
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash('Email already exists. Choose a different one.', 'danger')
@@ -353,11 +350,8 @@ def add_plant():
 
 
 
-def allowed_file(filename):
-    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
-
 @app.route('/upload_excel', methods=['GET', 'POST'])
+@login_required
 def upload_excel():
     if request.method == 'POST':
         # Get uploaded file
@@ -449,6 +443,7 @@ def about():
 
 
 @app.route('/add_location', methods=['GET', 'POST'])
+@login_required
 def insert_location():
     if request.method == 'POST':
         location_name = request.form['location_name']
@@ -459,7 +454,7 @@ def insert_location():
             image_file = request.files['location_image']
             if image_file.filename != '':
                 # Define the image path in the flower folder
-                image_filename = image_file.filename
+                image_filename = secure_filename(image_file.filename)
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
                 
                 # Save the image in the flower folder
@@ -478,6 +473,7 @@ def insert_location():
     return render_template('add_location.html')
 
 @app.route('/manage_plant')
+@login_required
 def manage_plant():
     plants = Plant.query.order_by(Plant.id_flower).all()
     return render_template('manage_plant.html', plants=plants)
@@ -519,6 +515,7 @@ def show_plants_in_location(location_id):
 
 
 @app.route('/delete_location/<int:location_id>', methods=['POST'])
+@login_required
 def delete_location(location_id):
     # ค้นหาสถานที่ในฐานข้อมูล
     location = Location.query.get(location_id)
@@ -556,7 +553,7 @@ def edit_location(location_id):
             # ตรวจสอบว่ามีการอัปโหลดรูปใหม่หรือไม่
             if location_image and location_image.filename != '':
                 # เก็บรูปในโฟลเดอร์ flower
-                image_filename = location_image.filename
+                image_filename = secure_filename(location_image.filename)
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
 
                 # Save the image to the flower folder
@@ -638,4 +635,4 @@ def plant_qrcode(id):
     return send_file(buf, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5000,debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=os.getenv('FLASK_DEBUG', 'false').lower() == 'true')

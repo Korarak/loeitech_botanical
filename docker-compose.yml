@@ -1,12 +1,62 @@
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: loeitech_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-botanical}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flask-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin} -d ${DB_NAME:-botanical}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build: .
+    container_name: loeitech_migrate
+    command: flask db upgrade
+    environment:
+      FLASK_APP: app.py
+      DATABASE_URI: postgresql+psycopg2://${DB_USER:-admin}:${DB_PASSWORD}@db:5432/${DB_NAME:-botanical}
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - flask-network
+    restart: "no"
+
   flask-app:
     build: .
     container_name: loeitech_botanical
+    restart: unless-stopped
     ports:
       - "5510:5000"
     environment:
-      FLASK_ENV: development
+      FLASK_APP: app.py
+      FLASK_ENV: production
+      DATABASE_URI: postgresql+psycopg2://${DB_USER:-admin}:${DB_PASSWORD}@db:5432/${DB_NAME:-botanical}
+      SECRET_KEY: ${SECRET_KEY}
+      FLASK_DEBUG: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - flask-network
+    volumes:
+      - ./static:/app/static
 
 networks:
   flask-network:
     driver: bridge
+
+volumes:
+  postgres_data:
