@@ -385,11 +385,11 @@ def add_plants_from_excel(file_path):
             id_flower=row['id_flower'],
             local_name=row['local_name'],
             scientific_name=row['scientific_name'],
+            scientific_surname=row.get('scientific_surname', None),
             family=row['family'],
             habit=row['habit'],
             characteristics=row['characteristics'],
-            location_id=1,  # กำหนด location_id เป็น 1 เสมอ
-            image_url=None  # ไม่ตรวจสอบหรือใช้รูปภาพ
+            location_id=1,
         )
         db.session.add(plant)
 

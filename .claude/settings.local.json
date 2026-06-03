@@ -1,8 +1,10 @@
 {
-    "permissions": {
-        "defaultMode": "bypassPermissions",
-        "allow": [
-            "/home/adm1n_ltc/mikrotik_api/loeitech_botanical/*"
-        ]
-    }
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "/home/adm1n_ltc/mikrotik_api/loeitech_botanical/*",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
 }
