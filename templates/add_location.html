@@ -4,6 +4,7 @@
 <div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
     <h1>เพิ่มพื้นที่ศึกษา</h1>
     <form method="POST" action="/add_location" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
         <label for="location_name">ชื่อสถานที่</label><br>
         <input type="text" id="location_name" name="location_name" class="form-control" required><br><br>

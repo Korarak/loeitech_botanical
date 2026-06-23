@@ -80,6 +80,7 @@
                         <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i> แก้ไข</a>
                         <!-- Form for deletion -->
                         <form action="{{ url_for('delete_plant', id=plant.id) }}" method="post" style="display:inline;" onsubmit="return confirmDelete()">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash-fill"></i> ลบ</button>
                         </form>
                         {% endif %}

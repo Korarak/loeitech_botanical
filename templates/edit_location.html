@@ -4,6 +4,7 @@
 <div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
     <h1>แก้ไขพื้นที่ศึกษา</h1>
     <form action="{{ url_for('edit_location', location_id=location.id) }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="mb-3">
             <label for="location_name" class="form-label">ชื่อสถานที่</label>
             <input type="text" class="form-control" id="location_name" name="location_name" value="{{ location.location_name }}" required>

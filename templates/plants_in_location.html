@@ -22,9 +22,11 @@
                     <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
                         {% if plant.images|length > 0 %}
                             <div class="card-img-top-container">
-                                <img src="{{ url_for('static', filename=plant.images[0].image_url) }}" 
-                                    alt="{{ plant.local_name }}" 
-                                    class="card-img-top rounded-top-3" 
+                                <img src="{{ url_for('static', filename=plant.images[0].image_url | thumb_url) }}"
+                                    alt="{{ plant.local_name }}"
+                                    class="card-img-top rounded-top-3"
+                                    loading="lazy"
+                                    decoding="async"
                                     style="height: 250px; object-fit: cover;">
                             </div>
                         {% else %}
@@ -90,10 +92,11 @@
                                        class="btn btn-warning flex-fill">
                                         <i class="bi bi-pencil-square me-1"></i>แก้ไข
                                     </a>
-                                    <form action="{{ url_for('delete_plant', id=plant.id) }}" 
-                                          method="post" 
-                                          onsubmit="return confirmDelete()" 
+                                    <form action="{{ url_for('delete_plant', id=plant.id) }}"
+                                          method="post"
+                                          onsubmit="return confirmDelete()"
                                           class="flex-fill">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="btn btn-danger w-100">
                                             <i class="bi bi-trash-fill me-1"></i>ลบ
                                         </button>

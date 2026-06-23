@@ -16,6 +16,7 @@
             <div class="card-body p-5">
                 <!-- ฟอร์ม Login -->
                 <form method="POST" class="needs-validation" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-4">
                         <label for="email" class="form-label fw-semibold">
                             <i class="bi bi-envelope me-2"></i>อีเมล

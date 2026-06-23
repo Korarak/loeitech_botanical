@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, abort,send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.utils import secure_filename
+from PIL import Image
 import os
 import pandas as pd
 from io import BytesIO
@@ -16,6 +18,14 @@ app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+
+@app.after_request
+def set_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    return response
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///plants.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'flower')
@@ -23,6 +33,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join('static', 'flower')
 # Initializing Flask extensions
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+csrf = CSRFProtect(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -61,6 +72,7 @@ class Plant(db.Model):
     habit = db.Column(db.String(50), nullable=False)
     characteristics = db.Column(db.Text, nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
+    study_year = db.Column(db.Integer, nullable=True)
 
     location = db.relationship('Location', backref='plants', lazy=True)
     images = db.relationship('PlantImage', backref='plant', lazy=True, cascade="all, delete-orphan")
@@ -119,7 +131,10 @@ def home():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
+    if current_user.role != 'admin':
+        abort(403)
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -244,8 +259,43 @@ def edit_profile():
 
 # Function to validate image file types
 def allowed_file(filename):
-    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+
+MAX_FULL_PX = 1920
+MAX_THUMB_PX = 600
+WEBP_QUALITY = 85
+
+
+def save_optimized_image(file_obj, upload_folder):
+    """Save uploaded image as WebP (full + thumbnail). Returns (image_url, thumb_url)."""
+    base_name = uuid.uuid4().hex
+    full_filename = f"{base_name}.webp"
+    thumb_filename = f"{base_name}_thumb.webp"
+    full_path = os.path.join(upload_folder, full_filename)
+    thumb_path = os.path.join(upload_folder, thumb_filename)
+
+    os.makedirs(upload_folder, exist_ok=True)
+
+    img = Image.open(file_obj)
+    if img.mode in ('RGBA', 'P', 'LA'):
+        img = img.convert('RGB')
+
+    img.thumbnail((MAX_FULL_PX, MAX_FULL_PX), Image.LANCZOS)
+    img.save(full_path, 'WEBP', quality=WEBP_QUALITY, method=6)
+
+    img.thumbnail((MAX_THUMB_PX, MAX_THUMB_PX), Image.LANCZOS)
+    img.save(thumb_path, 'WEBP', quality=WEBP_QUALITY, method=6)
+
+    return f'flower/{full_filename}', f'flower/{thumb_filename}'
+
+
+@app.template_filter('thumb_url')
+def thumb_url_filter(image_url):
+    """Derive thumbnail URL from full image URL by convention."""
+    base, ext = os.path.splitext(image_url)
+    return f"{base}_thumb{ext}"
 
 
 @app.route('/edit/<int:plant_id>', methods=['GET', 'POST'])
@@ -270,16 +320,7 @@ def edit_plant(plant_id):
             uploaded_images = request.files.getlist('images[]')
             for image_file in uploaded_images:
                 if image_file and allowed_file(image_file.filename):
-                    ext = os.path.splitext(image_file.filename)[1]
-                    unique_filename = f"{uuid.uuid4().hex}{ext}"
-                    image_filename = secure_filename(unique_filename)
-                    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
-                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                    image_file.save(image_path)
-
-                    image_url = f'flower/{image_filename}'
-
-                    # บันทึกภาพใหม่ลงฐานข้อมูล
+                    image_url, _ = save_optimized_image(image_file, app.config['UPLOAD_FOLDER'])
                     new_image = PlantImage(image_url=image_url, plant_id=plant.id)
                     db.session.add(new_image)
 
@@ -289,7 +330,8 @@ def edit_plant(plant_id):
 
         except Exception as e:
             db.session.rollback()
-            flash(f'เกิดข้อผิดพลาด: {str(e)}', 'danger')
+            app.logger.error(f'edit_plant error: {e}')
+            flash('เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง', 'danger')
 
     return render_template('edit_plant.html', plant=plant, locations=locations)
 
@@ -328,16 +370,7 @@ def add_plant():
 
         for image_file in images:
             if image_file and allowed_file(image_file.filename):
-                ext = os.path.splitext(image_file.filename)[1]
-                unique_filename = f"{uuid.uuid4().hex}{ext}"
-                image_filename = secure_filename(unique_filename)
-                image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
-                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                image_file.save(image_path)
-
-                image_url = f'flower/{image_filename}'  # หรือปรับตาม path ที่คุณใช้
-
-                # เพิ่มเข้า PlantImage
+                image_url, _ = save_optimized_image(image_file, app.config['UPLOAD_FOLDER'])
                 plant_image = PlantImage(image_url=image_url, plant_id=new_plant.id)
                 db.session.add(plant_image)
 
@@ -360,7 +393,7 @@ def upload_excel():
         # Check if file is valid
         if file and file.filename.endswith('.xlsx'):
             # Save the file
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
             file.save(file_path)
 
             # Process the file
@@ -368,7 +401,8 @@ def upload_excel():
                 add_plants_from_excel(file_path)
                 flash('Excel file uploaded and data added successfully!', 'success')
             except Exception as e:
-                flash(f"An error occurred: {str(e)}", 'danger')
+                app.logger.error(f'upload_excel error: {e}')
+                flash('เกิดข้อผิดพลาดในการประมวลผลไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์และลองใหม่อีกครั้ง', 'danger')
             return redirect(url_for('upload_excel'))
         else:
             flash('Invalid file type. Please upload an Excel file (.xlsx).', 'danger')
@@ -399,7 +433,11 @@ def add_plants_from_excel(file_path):
 @app.route('/delete_plant_image/<int:image_id>/<int:plant_id>', methods=['POST'])
 @login_required
 def delete_plant_image(image_id, plant_id):
+    if current_user.role != 'admin':
+        abort(403)
     image = PlantImage.query.get_or_404(image_id)
+    if image.plant_id != plant_id:
+        abort(403)
 
     # ลบไฟล์จากระบบ (ถ้ามีอยู่จริง)
     try:
@@ -407,7 +445,8 @@ def delete_plant_image(image_id, plant_id):
         if os.path.exists(image_path):
             os.remove(image_path)
     except Exception as e:
-        flash(f"เกิดข้อผิดพลาดในการลบไฟล์ภาพ: {e}", 'danger')
+        app.logger.error(f'delete_plant_image file error: {e}')
+        flash('เกิดข้อผิดพลาดในการลบไฟล์ภาพ กรุณาลองใหม่อีกครั้ง', 'danger')
 
     # ลบ record ในฐานข้อมูล
     db.session.delete(image)
@@ -421,7 +460,8 @@ def delete_plant_image(image_id, plant_id):
 @app.route('/delete_plant/<int:id>', methods=['POST'])
 @login_required
 def delete_plant(id):
-    # Find the plant by ID
+    if current_user.role != 'admin':
+        abort(403)
     plant = Plant.query.get_or_404(id)
     
     # Delete the plant from the database
@@ -480,7 +520,7 @@ def manage_plant():
 
 @app.route('/index', methods=['GET'])
 def index():
-    query = request.args.get('q', '')
+    query = request.args.get('q', '')[:100]  # จำกัด 100 ตัวอักษรป้องกัน expensive LIKE
     if query:
         plants = Plant.query.filter(
             Plant.local_name.ilike(f'%{query}%') |
@@ -527,7 +567,8 @@ def delete_location(location_id):
             flash(f"สถานที่ '{location.location_name}' ถูกลบเรียบร้อยแล้ว", "success")
         except Exception as e:
             db.session.rollback()
-            flash(f"เกิดข้อผิดพลาดในการลบ: {str(e)}", "danger")
+            app.logger.error(f'delete_location error: {e}')
+            flash('เกิดข้อผิดพลาดในการลบสถานที่ กรุณาลองใหม่อีกครั้ง', 'danger')
     else:
         flash("ไม่พบสถานที่ที่คุณต้องการลบ", "warning")
     return redirect(url_for('show_locations'))
@@ -568,7 +609,8 @@ def edit_location(location_id):
 
         except Exception as e:
             db.session.rollback()
-            flash(f"เกิดข้อผิดพลาดในการแก้ไข: {str(e)}", "danger")
+            app.logger.error(f'edit_location error: {e}')
+            flash('เกิดข้อผิดพลาดในการแก้ไขสถานที่ กรุณาลองใหม่อีกครั้ง', 'danger')
 
         return redirect(url_for('show_locations'))
 
@@ -582,6 +624,7 @@ def display_plants_in_location(location_id):
 
 
 @app.route('/download_plants_excel')
+@login_required
 def download_plants_excel():
     # Get all plants from the database
     plants = Plant.query.all()

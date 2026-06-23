@@ -6,6 +6,7 @@
 <div class="container mt-4 p-4 border rounded shadow-sm" style="background-color: white;">
     <h1>แก้ไขพรรณไม้: {{ plant.local_name }}</h1>
     <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label for="id_flower">รหัสพรรณไม้</label>
             <input type="text" id="id_flower" name="id_flower" class="form-control" value="{{ plant.id_flower }}" required>
@@ -75,6 +76,7 @@
                         </a>
                         <div class="card-body text-center p-2">
                             <form action="{{ url_for('delete_plant_image', image_id=image.id, plant_id=plant.id) }}" method="POST" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบภาพนี้?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn btn-sm btn-danger w-100">
                                     <i class="bi bi-trash"></i> ลบรูป
                                 </button>
